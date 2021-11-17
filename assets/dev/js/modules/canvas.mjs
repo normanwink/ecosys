@@ -23,23 +23,43 @@ class Canvas {
 
   render() {
     this.ctx.clearRect(0, 0, this.sizes.width, this.sizes.height);
+
     const center = this.navigator.getCenter();
     const zoom = this.navigator.view.zoom;
 
     if (this.hasWorld) {
-      const tileSize = this.world.parameters.upscale * zoom;
+      const tilesX = this.world.parameters.width;
+      const tilesY = this.world.parameters.height;
+      const tileSize = this.world.parameters.tileSize * zoom;
 
-      for (var i = 0; i < this.world.data.length; i++) {
+      for (var i = 0; i < tilesY; i++) {
         const row = this.world.data[i];
-        const y = -center.y + i * tileSize;
+        const y = (i - (tilesY / 2)) * tileSize + center.y;
 
-        for (var j = 0; j < row.length; j++) {
+        for (var j = 0; j < tilesX; j++) {
+          const x = (j - (tilesX / 2)) * tileSize + center.x;
           const elevation = row[j];
-          const x = -center.x + j * tileSize;
-          const c = 255 * (elevation + .5);
+          let r, g, b;
+
+          if (elevation.colorCached) {
+            r = elevation.color.r;
+            g = elevation.color.g;
+            b = elevation.color.b;
+          } else {
+            const level = this.world.findLevel(elevation.elevation);
+            const color = this.world.parameters.colors[level.name];
+
+            const factor = (elevation.elevation - level.prev) / level.delta;
+
+            r = color.from.r + factor * color.delta.r;
+            g = color.from.g + factor * color.delta.g;
+            b = color.from.b + factor * color.delta.b;
+
+            row[j].setColor(r, g, b);
+          }
 
           this.ctx.beginPath();
-          this.ctx.fillStyle = 'rgb(' + c + ', ' + c + ', ' + c + ')';
+          this.ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
           this.ctx.fillRect(x, y, tileSize, tileSize);
         }
       }

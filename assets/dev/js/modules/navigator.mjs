@@ -9,7 +9,7 @@ class Navigator {
     this.view = {
       x: 0,
       y: 0,
-      zoom: 1,
+      zoom: .5,
       width: 0,
       height: 0
     }
@@ -56,8 +56,8 @@ class Navigator {
       const deltaX = this.mouse.prev.x - this.mouse.pos.x;
       const deltaY = this.mouse.prev.y - this.mouse.pos.y;
 
-      this.view.x += deltaX;
-      this.view.y += deltaY;
+      this.view.x -= deltaX;
+      this.view.y -= deltaY;
     }
 
     this.mouse.prev.x = this.mouse.pos.x;
@@ -83,8 +83,8 @@ class Navigator {
       this.view.zoom = this.parameters.minZoom
     } else {
       // move camera
-      this.view.x += (deltaZoom * this.view.width) / 2;
-      this.view.y += (deltaZoom * this.view.height) / 2;
+      // this.view.x += (deltaZoom * this.view.width) / 2;
+      // this.view.y += (deltaZoom * this.view.height) / 2;
     }
   }
 
