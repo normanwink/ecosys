@@ -1,0 +1,37 @@
+{
+  "name": "ecosys",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-js": "terser-folder assets/dev/js -eo assets/build/js -c -x .js --config-file './uglify.json'",
+    "build-css": "node-sass assets/dev/scss/style.scss assets/build/css/style.css --output-style compressed",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build-js": "assets/dev/js/**/*.mjs",
+    "build-css": {
+      "patterns": [
+        "dev/**/*.scss"
+      ],
+      "extensions": "scss"
+    }
+  },
+  "dependencies": {
+    "node-sass": "^6.0.1",
+    "npm-watch": "^0.11.0",
+    "terser": "^4.6.4",
+    "terser-folder": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/normanwink/ecosys.git"
+  },
+  "author": "Norman Wink",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/normanwink/ecosys/issues"
+  },
+  "homepage": "https://github.com/normanwink/ecosys#readme"
+}

@@ -1,0 +1,12 @@
+{
+  "compress": {
+    "drop_console": false,
+    "ecma": 2015,
+    "hoist_funs": true,
+    "keep_fargs": false,
+    "toplevel": true
+  },
+  "output": {
+    "comments": false
+  }
+}
