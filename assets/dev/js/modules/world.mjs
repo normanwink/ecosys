@@ -1,4 +1,5 @@
 import Perlin from './perlin.mjs';
+import Organism from './organism.mjs';
 
 class Elevation {
   constructor(e) {
@@ -27,6 +28,7 @@ class World {
       width: 64,
       height: 64,
       tileSize: 30,
+      organisms: 1,
       elevation: {
         scale: 0.08,
         position: 0,
@@ -121,12 +123,23 @@ class World {
       }
     }
 
+    this.organisms = [];
+    for (var i = 0; i < this.parameters.organisms; i++) {
+      this.organisms.push(new Organism())
+    }
+
     this.perlin = new Perlin();
     this.data = [];
 
     this.updateColorDelta();
     this.reseed();
     this.generate();
+  }
+
+  update() {
+    for (let i = 0; i < this.organisms.length; i++) {
+      this.organisms[i].walk();
+    }
   }
 
   findLevel(elevation) {

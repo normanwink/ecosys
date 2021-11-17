@@ -28,6 +28,8 @@ class Canvas {
     const zoom = this.navigator.view.zoom;
 
     if (this.hasWorld) {
+      this.world.update();
+
       const tilesX = this.world.parameters.width;
       const tilesY = this.world.parameters.height;
       const tileSize = this.world.parameters.tileSize * zoom;
@@ -62,6 +64,31 @@ class Canvas {
           this.ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
           this.ctx.fillRect(x, y, tileSize, tileSize);
         }
+      }
+
+      for (const orga of this.world.organisms) {
+        const oS = orga.size * zoom;
+        const oX = orga.position.x - oS / 2;
+        const oY = orga.position.y - oS / 2;
+        const x = oX * zoom + center.x;
+        const y = oY * zoom + center.y;
+
+        const r = orga.color.r;
+        const g = orga.color.g;
+        const b = orga.color.b;
+
+        const mX = oS * Math.sin(orga.direction);
+        const mY = oS * Math.cos(orga.direction);
+
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+        this.ctx.arc(x, y, oS, 0, 2 * Math.PI);
+        this.ctx.fill();
+
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'rgb(0, 0, 0)';
+        this.ctx.arc(x + mX, y + mY, oS / 3, 0, 2 * Math.PI);
+        this.ctx.fill();
       }
     }
 
