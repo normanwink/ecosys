@@ -87,36 +87,38 @@ class Canvas {
       }
 
       for (const orga of this.world.organisms) {
-        const oS = orga.size * zoom;
-        const oX = orga.position.x - oS / 2;
-        const oY = orga.position.y - oS / 2;
-        const x = oX * zoom + center.x;
-        const y = oY * zoom + center.y;
+        if (orga.alive) {
+          const oS = orga.size * zoom;
+          const oX = orga.position.x - oS / 2;
+          const oY = orga.position.y - oS / 2;
+          const x = oX * zoom + center.x;
+          const y = oY * zoom + center.y;
 
-        const r = orga.color.r;
-        const g = orga.color.g;
-        const b = orga.color.b;
+          const r = orga.color.r;
+          const g = orga.color.g;
+          const b = orga.color.b;
 
-        // organism body
-        this.ctx.beginPath();
-        this.ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-        this.ctx.arc(x, y, oS, 0, 2 * Math.PI);
-        this.ctx.fill();
+          // organism body
+          this.ctx.beginPath();
+          this.ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+          this.ctx.arc(x, y, oS, 0, 2 * Math.PI);
+          this.ctx.fill();
 
-        // organism view / sight
-        this.ctx.beginPath();
-        this.ctx.strokeStyle = 'rgb(255, 0, 0)';
-        this.ctx.arc(x, y, orga.sight * zoom, 0, 2 * Math.PI);
-        this.ctx.stroke();
+          // organism view / sight
+          this.ctx.beginPath();
+          this.ctx.strokeStyle = 'rgb(255, 0, 0)';
+          this.ctx.arc(x, y, orga.sight * zoom, 0, 2 * Math.PI);
+          this.ctx.stroke();
 
-        const mX = oS * Math.sin(orga.movement.direction);
-        const mY = oS * Math.cos(orga.movement.direction);
+          const mX = oS * Math.sin(orga.movement.direction);
+          const mY = oS * Math.cos(orga.movement.direction);
 
-        // organism mouth / eye
-        this.ctx.beginPath();
-        this.ctx.fillStyle = 'rgb(255, 255, 255)';
-        this.ctx.arc(x + mX, y + mY, oS / 3, 0, 2 * Math.PI);
-        this.ctx.fill();
+          // organism mouth / eye
+          this.ctx.beginPath();
+          this.ctx.fillStyle = 'rgb(255, 255, 255)';
+          this.ctx.arc(x + mX, y + mY, oS / 3, 0, 2 * Math.PI);
+          this.ctx.fill();
+        }
       }
     }
 

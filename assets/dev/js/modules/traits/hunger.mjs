@@ -9,6 +9,10 @@ class Hunger {
     this.energyDecay = 2;
   }
 
+  reduce(value) {
+    this.value = Math.max(this.value - value, 0);
+  }
+
   // return a value between 1 and 0
   getEnergy() {
     const normalized = 1 - Math.pow(this.value / this.max, this.energyDecay);

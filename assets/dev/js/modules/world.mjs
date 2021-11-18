@@ -50,7 +50,7 @@ class World {
       height: 5,
       tileSize: 100,
       organisms: 1,
-      foodRate: 0.1,
+      foodRate: 0.01,
       elevation: {
         scale: 0.08,
         position: 0,
@@ -160,15 +160,30 @@ class World {
   }
 
   update() {
-    for (let i = 0; i < this.organisms.length; i++) {
-      this.organisms[i].think();
-    }
-
     const foodSpawn = Math.random() < this.parameters.foodRate;
     if (foodSpawn) {
       const newFood = new Food(this);
       newFood.spawn();
       this.foods.push(newFood);
+    }
+
+    for (let i = 0; i < this.organisms.length; i++) {
+      if (this.organisms[i].alive) {
+        this.organisms[i].think();
+        this.organisms[i].move();
+
+        for (let j = 0; j < this.foods.length; j++) {
+          if (this.foods[j].alive) {
+            const distance = this.organisms[i].position.getDistance(this.foods[j].position);
+
+            if (distance < this.organisms[i].size + this.foods[j].size) {
+              this.organisms[i].eat(this.foods[j]);
+              this.foods[j].kill();
+              this.foods.splice(j, 1);
+            }
+          }
+        }
+      }
     }
   }
 

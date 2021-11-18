@@ -1,4 +1,4 @@
-import Entity from './entity.mjs';
+import Entity from './helpers/entity.mjs';
 
 'use strict';
 
@@ -35,8 +35,7 @@ class Food extends Entity {
     const x = tile.x * wT + Math.random() * wT - (wX * wT) / 2;
     const y = tile.y * wT + Math.random() * wT - (wY * wT) / 2;
 
-    this.position.x = x;
-    this.position.y = y;
+    this.position.moveTo(x, y);
   }
 }
 
