@@ -1,9 +1,11 @@
+'use strict';
+
 class Navigator {
   constructor() {
     this.parameters = {
       zoomSpeed: 0.002,
       maxZoom: 6,
-      minZoom: 0.3,
+      minZoom: 0.1,
     }
 
     this.view = {
@@ -77,15 +79,7 @@ class Navigator {
     this.view.zoom += deltaZoom;
 
     // limit
-    if (this.view.zoom > this.parameters.maxZoom) {
-      this.view.zoom = this.parameters.maxZoom;
-    } else if (this.view.zoom < this.parameters.minZoom) {
-      this.view.zoom = this.parameters.minZoom
-    } else {
-      // move camera
-      // this.view.x += (deltaZoom * this.view.width) / 2;
-      // this.view.y += (deltaZoom * this.view.height) / 2;
-    }
+    this.view.zoom = Math.min(Math.max(this.parameters.minZoom, this.view.zoom), this.parameters.maxZoom);
   }
 
   setViewport(size) {

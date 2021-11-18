@@ -1,5 +1,7 @@
 // https://github.com/joeiddon/perlin/blob/master/perlin.js
 
+'use strict';
+
 class Perlin {
   constructor() {
     this.seed();

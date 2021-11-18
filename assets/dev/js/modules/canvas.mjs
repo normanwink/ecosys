@@ -1,5 +1,7 @@
 import Navigator from './navigator.mjs';
 
+'use strict';
+
 class Canvas {
   constructor() {
     this.canvas = document.querySelector('#canvas');
@@ -66,6 +68,24 @@ class Canvas {
         }
       }
 
+      for (const food of this.world.foods) {
+        const fS = food.size * zoom;
+        const fX = food.position.x - fS / 2;
+        const fY = food.position.y - fS / 2;
+        const x = fX * zoom + center.x;
+        const y = fY * zoom + center.y;
+
+        const r = food.color.r;
+        const g = food.color.g;
+        const b = food.color.b;
+
+        // food body
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+        this.ctx.arc(x, y, fS, 0, 2 * Math.PI);
+        this.ctx.fill();
+      }
+
       for (const orga of this.world.organisms) {
         const oS = orga.size * zoom;
         const oX = orga.position.x - oS / 2;
@@ -77,16 +97,24 @@ class Canvas {
         const g = orga.color.g;
         const b = orga.color.b;
 
-        const mX = oS * Math.sin(orga.direction);
-        const mY = oS * Math.cos(orga.direction);
-
+        // organism body
         this.ctx.beginPath();
         this.ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
         this.ctx.arc(x, y, oS, 0, 2 * Math.PI);
         this.ctx.fill();
 
+        // organism view / sight
         this.ctx.beginPath();
-        this.ctx.fillStyle = 'rgb(0, 0, 0)';
+        this.ctx.strokeStyle = 'rgb(255, 0, 0)';
+        this.ctx.arc(x, y, orga.sight * zoom, 0, 2 * Math.PI);
+        this.ctx.stroke();
+
+        const mX = oS * Math.sin(orga.movement.direction);
+        const mY = oS * Math.cos(orga.movement.direction);
+
+        // organism mouth / eye
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'rgb(255, 255, 255)';
         this.ctx.arc(x + mX, y + mY, oS / 3, 0, 2 * Math.PI);
         this.ctx.fill();
       }
