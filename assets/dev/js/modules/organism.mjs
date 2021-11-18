@@ -17,7 +17,7 @@ class Organism extends Entity {
   }
 
   movement = new Movement();
-  sight = 80;
+  sight = 200;
 
   bias = {
     geo: new GeoBias()
@@ -42,42 +42,86 @@ class Organism extends Entity {
       if (north) {
         if (east) {
           // top right
-          this.movement.turnTo(25 * Math.PI);
+          this.movement.turnTo(1.25 * Math.PI);
         } else if (west) {
           // top left
-          this.movement.turnTo(1.75 * Math.PI);
+          this.movement.turnTo(.25 * Math.PI);
         } else {
-          this.movement.turnTo(0);
+          this.movement.turnTo(.5 * Math.PI);
         }
       } else if (south) {
         if (east) {
           // bottom right
-          this.movement.turnTo(.75 * Math.PI);
+          this.movement.turnTo(1.25 * Math.PI);
         } else if (west) {
           // bottom left
-          this.movement.turnTo(1.25 * Math.PI);
+          this.movement.turnTo(1.75 * Math.PI);
         } else {
-          this.movement.turnTo(1 * Math.PI);
+          this.movement.turnTo(1.5 * Math.PI);
         }
       } else if (east) {
         // right
-        this.movement.turnTo(1.5 * Math.PI);
+        this.movement.turnTo(1 * Math.PI);
       } else if (west) {
         // left
-        this.movement.turnTo(.5 * Math.PI);
+        this.movement.turnTo(0);
       } else {
-        let dir = 0;
-        let determination = Math.random();
+        const energy = this.hunger.getEnergy();
+        const foodChoices = [];
 
-        if (determination < .3) {
-          dir = this.movement.turn;
+        for (var i = 0; i < this.hunger.memory.length; i++) {
+          const foodId = this.hunger.memory[i];
+          const food = this.world.getFoodById(foodId);
+
+          if (food) {
+            const angle = this.position.getAngle(food.position);
+            const distance = this.position.getDistance(food.position);
+
+            foodChoices.push({
+              delta: angle,
+              distance: distance
+            });
+          } else {
+            // assume it was already eaten
+            this.hunger.forget(foodId);
+          }
         }
 
-        if (determination > .7) {
-          dir = -this.movement.turn;
-        }
+        // increase probability of following food with hunger
+        const followFood = Math.random() > 1 - energy;
 
-        this.movement.turnBy(dir);
+        if (followFood && foodChoices.length > 0) {
+          // sort by distance
+          const sortedFoodChoices = foodChoices.sort(function(fA, fB) {
+            const a = fA.distance;
+            const b = fB.distance;
+
+            if (a < b) {
+              return -1; // A comes first
+            }
+            if (a > b) {
+              return 1; // B comes first
+            }
+
+            return 0;  // must be equal
+          });
+
+          let dir = 0;
+          dir = sortedFoodChoices[0].delta;
+          this.movement.turnTo(dir);
+        } else {
+          let dir = 0;
+          let determination = Math.random();
+
+          if (determination < .3) {
+            dir = this.movement.turn;
+          }
+
+          if (determination > .7) {
+            dir = -this.movement.turn;
+          }
+          this.movement.turnBy(dir);
+        }
       }
     }
   }
@@ -96,8 +140,12 @@ class Organism extends Entity {
     this.position.moveBy(hungerX, hungerY);
   }
 
-  eat(food) {
-    this.hunger.reduce(food.energy);
+  eat(foodId) {
+    const food = this.world.getFoodById(foodId);
+
+    if (food) {
+      this.hunger.reduce(food.energy);
+    }
   }
 
   // get grid which is visible by organism

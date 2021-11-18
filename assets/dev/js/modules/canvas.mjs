@@ -70,8 +70,8 @@ class Canvas {
 
       for (const food of this.world.foods) {
         const fS = food.size * zoom;
-        const fX = food.position.x - fS / 2;
-        const fY = food.position.y - fS / 2;
+        const fX = food.position.x;
+        const fY = food.position.y;
         const x = fX * zoom + center.x;
         const y = fY * zoom + center.y;
 
@@ -98,6 +98,41 @@ class Canvas {
           const g = orga.color.g;
           const b = orga.color.b;
 
+          // debug angle to food
+          for (var i = 0; i < orga.hunger.memory.length; i++) {
+            const foodId = orga.hunger.memory[i];
+            const food = this.world.getFoodById(foodId);
+
+            if (food) {
+              // draw delta rectangle
+              // this.ctx.beginPath();
+              // this.ctx.moveTo(x, y);
+              // this.ctx.lineTo(x + delta.x * zoom, y);
+              // this.ctx.lineTo(x + delta.x * zoom, y + delta.y * zoom);
+              // this.ctx.lineTo(x, y + delta.y * zoom);
+              // this.ctx.lineTo(x, y);
+              // this.ctx.stroke();
+
+              // test angle
+              const angle = orga.position.getAngle(food.position);
+              const distance = orga.position.getDistance(food.position) * zoom;
+              const fX = x + distance * Math.cos(angle);
+              const fY = y + distance * Math.sin(angle);
+              this.ctx.beginPath();
+              this.ctx.moveTo(x, y);
+              this.ctx.lineTo(fX, fY);
+              this.ctx.stroke();
+
+              // mark target food
+              const fX2 = food.position.x * zoom + center.x;
+              const fY2 = food.position.y * zoom + center.y;
+              this.ctx.beginPath();
+              this.ctx.fillStyle = 'rgb(255, 0, 0)';
+              this.ctx.arc(fX2, fY2, 8 * zoom, 0, 2 * Math.PI);
+              this.ctx.fill();
+            }
+          }
+
           // organism body
           this.ctx.beginPath();
           this.ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
@@ -110,8 +145,8 @@ class Canvas {
           this.ctx.arc(x, y, orga.sight * zoom, 0, 2 * Math.PI);
           this.ctx.stroke();
 
-          const mX = oS * Math.sin(orga.movement.direction);
-          const mY = oS * Math.cos(orga.movement.direction);
+          const mX = oS * Math.cos(orga.movement.direction);
+          const mY = oS * Math.sin(orga.movement.direction);
 
           // organism mouth / eye
           this.ctx.beginPath();

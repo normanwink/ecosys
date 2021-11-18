@@ -46,11 +46,11 @@ class Elevation {
 class World {
   constructor() {
     this.parameters = {
-      width: 5,
-      height: 5,
+      width: 32,
+      height: 32,
       tileSize: 100,
-      organisms: 1,
-      foodRate: 0.01,
+      organisms: 5,
+      foodRate: 0.2,
       elevation: {
         scale: 0.08,
         position: 0,
@@ -160,7 +160,7 @@ class World {
   }
 
   update() {
-    const foodSpawn = Math.random() < this.parameters.foodRate;
+    const foodSpawn = Math.random() < this.parameters.foodRate * (this.parameters.width + this.parameters.height) / 100;
     if (foodSpawn) {
       const newFood = new Food(this);
       newFood.spawn();
@@ -172,15 +172,32 @@ class World {
         this.organisms[i].think();
         this.organisms[i].move();
 
+        // check food
         for (let j = 0; j < this.foods.length; j++) {
           if (this.foods[j].alive) {
             const distance = this.organisms[i].position.getDistance(this.foods[j].position);
+            const foodId = this.foods[j].id;
 
+            // collision with food = eat
             if (distance < this.organisms[i].size + this.foods[j].size) {
-              this.organisms[i].eat(this.foods[j]);
+              this.organisms[i].eat(foodId);
               this.foods[j].kill();
-              this.foods.splice(j, 1);
             }
+
+            // within  sight
+            if (distance < this.organisms[i].sight) {
+              this.organisms[i].hunger.remember(foodId);
+            }
+          }
+        }
+
+        // clear eaten food sources
+        let j = 0;
+        while (j < this.foods.length) {
+          if (this.foods[j].alive) {
+            j++;
+          } else {
+            this.foods.splice(j, 1);
           }
         }
       }
@@ -226,6 +243,16 @@ class World {
     }
 
     return this.parameters.levels[this.parameters.levels.length - 1]
+  }
+
+  getFoodById(id) {
+    for (let i = 0; i < this.foods.length; i++) {
+      if (this.foods[i].id == id) {
+        return this.foods[i];
+        break;
+      }
+    }
+    return false;
   }
 
   updateColorDelta() {

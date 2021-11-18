@@ -29,11 +29,11 @@ class Movement {
   }
 
   getDeltaX() {
-    return this.speed * Math.sin(this.direction);
+    return this.speed * Math.cos(this.direction);
   }
 
   getDeltaY() {
-    return this.speed * Math.cos(this.direction);
+    return this.speed * Math.sin(this.direction);
   }
 }
 

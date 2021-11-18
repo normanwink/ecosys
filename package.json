@@ -4,25 +4,32 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-js": "terser-folder assets/dev/js -eo assets/build/js -c -x .js --config-file './uglify.json'",
-    "build-css": "node-sass assets/dev/scss/style.scss assets/build/css/style.css --output-style compressed",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "npm-watch"
+    "build-css": "node-sass src/scss/style.scss build/css/style.css --output-style",
+    "build-js": "uglifyjs --compress --mangle --output build/js/script.js -- src/js/script.js",
+    "watch": "npm-watch",
+    "serve": "browser-sync start --config 'conf/browser-sync.js'"
   },
   "watch": {
-    "build-js": "assets/dev/js/**/*.mjs",
     "build-css": {
       "patterns": [
-        "dev/**/*.scss"
+        "src/scss/**/*.scss"
       ],
       "extensions": "scss"
+    },
+    "build-js": {
+      "patterns": [
+        "src/js/**/*.js"
+      ],
+      "extensions": "js"
     }
   },
   "dependencies": {
     "node-sass": "^6.0.1",
     "npm-watch": "^0.11.0",
-    "terser": "^4.6.4",
-    "terser-folder": "^2.0.0"
+    "uglify-js": "^3.14.2",
+    "browser-sync": "^2.27.5",
+    "concurrently": "^6.2.1"
   },
   "repository": {
     "type": "git",

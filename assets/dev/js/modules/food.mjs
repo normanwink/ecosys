@@ -12,6 +12,7 @@ class Food extends Entity {
   }
   idealElevation = 0.45;
   elevationBias = 2;
+  id = 0;
 
   spawn() {
     const wX = this.world.parameters.width;
@@ -34,6 +35,8 @@ class Food extends Entity {
 
     const x = tile.x * wT + Math.random() * wT - (wX * wT) / 2;
     const y = tile.y * wT + Math.random() * wT - (wY * wT) / 2;
+
+    this.id = Date.now();
 
     this.position.moveTo(x, y);
   }

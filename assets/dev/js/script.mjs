@@ -8,7 +8,9 @@ const w = new World();
 
 c.setWorld(w);
 
-w.organisms[0].movement.setSpeed(5);
-w.organisms[0].movement.setTurn(.1);
-w.organisms[0].movement.setEfficiency(.8);
-// console.log(c.world.parameters.levels);
+for (var i = 0; i < w.organisms.length; i++) {
+  w.organisms[i].movement.setSpeed(3 + Math.random() * 2);
+  w.organisms[i].movement.setTurn(0.07 + Math.random() * .03);
+  w.organisms[i].movement.setEfficiency(0.4 + Math.random() * .4);
+  w.organisms[i].movement.turnTo((i / w.organisms.length) * 2 * Math.PI)
+}
